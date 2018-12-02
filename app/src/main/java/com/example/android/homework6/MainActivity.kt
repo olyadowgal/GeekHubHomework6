@@ -3,6 +3,8 @@ package com.example.android.homework6
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import com.example.android.homework6.adapters.MainAdapter
 import com.example.android.homework6.entities.ForecastResponse
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_main.*
@@ -11,16 +13,21 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        var url =
+            "http://api.openweathermap.org/data/2.5/forecast?q=Kiev&mode=json&APPID=5a5090b563dd7bf6c7f87a629207bb31&units=metric"
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var url =
-            "http://api.openweathermap.org/data/2.5/forecast?q=Kiev&mode=json&APPID=5a5090b563dd7bf6c7f87a629207bb31&units=metric"
+
+        recyclerView_main.layoutManager = LinearLayoutManager(this)
         WeatherLoader(url).execute()
     }
 
-    inner class WeatherLoader(url: String) : AsyncTask<Unit, Unit, Unit>() {
+    inner class WeatherLoader(url: String) : AsyncTask<Unit,Unit,Unit>() {
 
         var curr_url = url
 
@@ -36,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
                     val forecast = gson.fromJson(body, ForecastResponse::class.java)
                     runOnUiThread {
-                        jsontext.text = forecast.toString()
+                        recyclerView_main.adapter = MainAdapter(forecast.list)
                     }
 
                 }
