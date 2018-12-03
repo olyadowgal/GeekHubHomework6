@@ -1,11 +1,13 @@
 package com.example.android.homework6.adapters
 
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.android.homework6.R
+import com.example.android.homework6.SecondActivity
 import com.example.android.homework6.entities.Forecast
 
 class MainAdapter(val listOfForecasts: List<Forecast>) : RecyclerView.Adapter<MainAdapter.ForecastViewHolder>() {
@@ -32,15 +34,25 @@ class MainAdapter(val listOfForecasts: List<Forecast>) : RecyclerView.Adapter<Ma
         )
     }
 
-    class ForecastViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    class ForecastViewHolder(val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         private val date_text: TextView = view.findViewById(R.id.forecast_date)
         private val temp_text: TextView = view.findViewById(R.id.forecast_temp)
         private val descr_text: TextView = view.findViewById(R.id.forecast_description)
+
+        init {
+            view.setOnClickListener(this)
+        }
+
 
         fun onBind(date: String, temperature: Number, description: String) {
             date_text.text = date
             temp_text.text = temperature.toString()
             descr_text.text = description
+        }
+
+        override fun onClick(v: View) {
+            val sendIntent = Intent(v.context, SecondActivity::class.java)
+            v.context.startActivity(sendIntent)
         }
 
 
