@@ -1,7 +1,8 @@
-package com.example.android.homework6
+package com.example.android.homework6.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.example.android.homework6.R
 import com.example.android.homework6.entities.Forecast
 import kotlinx.android.synthetic.main.activity_second.*
 

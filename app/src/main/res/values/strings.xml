@@ -2,4 +2,7 @@
     <string name="app_name">Homework6</string>
     <string name="max_temperature">Max temperature</string>
     <string name="min_temperature">Min temperature</string>
+    <string name="save">Save</string>
+    <string name="string_unit_format">Choose your units format:</string>
+    <string name="action_units">Units</string>
 </resources>
