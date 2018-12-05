@@ -1,59 +1,43 @@
 package com.example.android.homework6
 
-import android.os.AsyncTask
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.example.android.homework6.adapters.MainAdapter
+import com.example.android.homework6.asynctasks.WeatherLoader
+import com.example.android.homework6.entities.Forecast
 import com.example.android.homework6.entities.ForecastResponse
-import com.google.gson.GsonBuilder
+import com.example.android.homework6.interfaces.IOnItemClicked
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.*
-import java.io.IOException
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IOnItemClicked<Forecast>, WeatherLoader.Callback {
 
     companion object {
-        var url =
-            "http://api.openweathermap.org/data/2.5/forecast?q=Kiev&mode=json&APPID=5a5090b563dd7bf6c7f87a629207bb31&units=metric"
-    }
 
+        const val BASE_URL = "http://api.openweathermap.org/data/2.5/forecast?q=%s&mode=json&APPID=%s&units=%s"
+        const val APP_ID = "5a5090b563dd7bf6c7f87a629207bb31"
+        const val LOCATION = "Kiev"
+        const val DEFAULT_UNITS = "metric"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         recyclerView_main.layoutManager = LinearLayoutManager(this)
-        WeatherLoader(url).execute()
+        WeatherLoader(String.format(BASE_URL, LOCATION, APP_ID, DEFAULT_UNITS), this).execute()
     }
 
-    inner class WeatherLoader(url: String) : AsyncTask<Unit,Unit,Unit>() {
-
-        var curr_url = url
-
-        override fun doInBackground(vararg params: Unit) {
-            val request = Request.Builder().url(curr_url).build()
-
-            val client = OkHttpClient()
-            client.newCall(request).enqueue(object : Callback {
-                override fun onResponse(call: Call?, response: Response?) {
-                    val body = response?.body()?.string()
-
-                    val gson = GsonBuilder().create()
-
-                    val forecast = gson.fromJson(body, ForecastResponse::class.java)
-                    runOnUiThread {
-                        recyclerView_main.adapter = MainAdapter(forecast.list)
-                    }
-
-                }
-
-                override fun onFailure(call: Call?, e: IOException?) {
-                    println("Failed to execute request")
-                }
-            })
+    override fun onResult(response: ForecastResponse?) {
+        response?.let {
+            recyclerView_main.adapter = MainAdapter(it.list, this)
         }
-
     }
 
+    override fun onItemClicked(item: Forecast) {
+        val sendIntent = Intent(this, SecondActivity::class.java)
+        sendIntent.putExtra("FORECAST", item)
+        startActivity(sendIntent)
+    }
 }

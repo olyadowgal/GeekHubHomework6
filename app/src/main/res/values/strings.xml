@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Homework6</string>
+    <string name="max_temperature">Max temperature</string>
+    <string name="min_temperature">Min temperature</string>
 </resources>

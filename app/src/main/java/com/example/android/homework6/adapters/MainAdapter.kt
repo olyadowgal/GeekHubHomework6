@@ -1,16 +1,18 @@
 package com.example.android.homework6.adapters
 
-import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.android.homework6.R
-import com.example.android.homework6.SecondActivity
 import com.example.android.homework6.entities.Forecast
+import com.example.android.homework6.interfaces.IOnItemClicked
 
-class MainAdapter(val listOfForecasts: List<Forecast>) : RecyclerView.Adapter<MainAdapter.ForecastViewHolder>() {
+
+class MainAdapter(val forecasts: List<Forecast>, val listener: IOnItemClicked<Forecast>) :
+    RecyclerView.Adapter<MainAdapter.ForecastViewHolder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ForecastViewHolder {
         return ForecastViewHolder(
@@ -23,18 +25,18 @@ class MainAdapter(val listOfForecasts: List<Forecast>) : RecyclerView.Adapter<Ma
     }
 
     override fun getItemCount(): Int {
-        return listOfForecasts.size
+        return forecasts.size
     }
 
     override fun onBindViewHolder(holder: ForecastViewHolder, position: Int) {
         holder.onBind(
-            listOfForecasts[position].dtTxt,
-            listOfForecasts[position].main.temp,
-            listOfForecasts[position].weather[0].description
+            forecasts[position].dtTxt,
+            forecasts[position].main.temp,
+            forecasts[position].weather[0].main
         )
     }
 
-    class ForecastViewHolder(val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class ForecastViewHolder(val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         private val date_text: TextView = view.findViewById(R.id.forecast_date)
         private val temp_text: TextView = view.findViewById(R.id.forecast_temp)
         private val descr_text: TextView = view.findViewById(R.id.forecast_description)
@@ -51,8 +53,8 @@ class MainAdapter(val listOfForecasts: List<Forecast>) : RecyclerView.Adapter<Ma
         }
 
         override fun onClick(v: View) {
-            val sendIntent = Intent(v.context, SecondActivity::class.java)
-            v.context.startActivity(sendIntent)
+            val forecast = forecasts[adapterPosition]
+            listener.onItemClicked(forecast)
         }
 
 

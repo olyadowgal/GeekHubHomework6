@@ -1,6 +1,7 @@
 package com.example.android.homework6.entities
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Main(
     var temp: Number,
@@ -8,4 +9,4 @@ data class Main(
     @SerializedName("temp_max") var tempMax: Number,
     var preasure : Number,
     var humidity : Int
-)
+) : Serializable
